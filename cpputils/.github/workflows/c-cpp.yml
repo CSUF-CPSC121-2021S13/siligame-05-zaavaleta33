@@ -1,0 +1,26 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master, v1, v2 ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      DISPLAY: ':99'
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup headless environment
+      run: |
+        Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+    - name: make image_unittest
+      run: make image_unittest
+      working-directory: graphics/test
+    - name: make karel_unittest
+      run: make karel_unittest
+      working-directory: karel/src/test
