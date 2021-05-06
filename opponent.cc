@@ -14,12 +14,14 @@ void Opponent::Move(const graphics::Image &gamescreen) {
   }
 }
 std::unique_ptr<OpponentProjectile> Opponent::LaunchProjectile() {
-  counter++;
   if (counter == 10) {
+    std::unique_ptr<OpponentProjectile> new_ptr_proj_opp =
+        std::make_unique<OpponentProjectile>((x_ + width_) * 0.5, y_ + height_);
+    counter = 0;
+    return new_ptr_proj_opp;
+  } else {
+    counter++;
     return nullptr;
-  } else if (GetX() == 25 && GetY() == 50 && counter != 10) {
-    std::unique<OpponentProjectile> ptr_opp_proj;
-    return std::move(ptr_opp_proj);
   }
 }
 

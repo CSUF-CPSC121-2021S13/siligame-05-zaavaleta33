@@ -9,6 +9,11 @@ void Game::Init() {
 void Game::UpdateScreen() {
   // draw white ractangle
   gamescreen.DrawRectangle(0, 0, 800, 600, 255, 255, 255);
+  std::string score = "Score: " + std::to_string(GetScore());
+  gamescreen.DrawText(1, 1, score, 16, 0, 0, 0);
+  if (play.GetIsActive() == true) {
+    play.Draw(gamescreen);
+  }
   for (int i = 0; i < opp_list.size(); i++) {
     if (opp_list[i]->GetIsActive()) {
       opp_list[i]->Draw(gamescreen);
@@ -24,10 +29,10 @@ void Game::UpdateScreen() {
       lazer[x]->Draw(gamescreen);
     }
   }
-  if (play->GetIsActive()) {
-    play->Draw(gamescreen);
+  if (lost_game) {
+    std::string end_game = "GameOver";
+    gamescreen.DrawText(250, 250, end_game, 70, 0, 0, 0);
   }
-  gamescreen.DrawText(GetScore());
 }
 
 void Game::Start() { gamescreen.ShowUntilClosed(); }
@@ -35,52 +40,57 @@ void Game::Start() { gamescreen.ShowUntilClosed(); }
 void Game::MoveGameElements() {
   for (int i = 0; i < opp_list.size(); i++) {
     if (opp_list[i]->GetIsActive()) {
-      opp_list[i].Move(gamescreen);
+      opp_list[i]->Move(gamescreen);
     }
   }
   for (int j = 0; j < opponent_projectiles.size(); j++) {
     if (opponent_projectiles[j]->GetIsActive()) {
-      opponent_projectiles[j].Move(gamescreen);
+      opponent_projectiles[j]->Move(gamescreen);
     }
   }
   for (int x = 0; x < lazer.size(); x++) {
     if (lazer[x]->GetIsActive()) {
-      lazer[x].Move(gamescreen);
+      lazer[x]->Move(gamescreen);
     }
   }
 }
 
 void Game::FilterIntersections() {
   for (int a = 0; a < opp_list.size(); a++) {
-    if (play->IntersectsWith(opp_list[a]) &&
-        opp_list[a]->IntersectsWith(play) {
+    if (play.IntersectsWith(opp_list[a].get())) {
       lost_game = true;
       opp_list[a]->SetIsActive(false);
-      play->SetIsActive(false);
+      play.SetIsActive(false);
     }
   }
   for (int q = 0; q < lazer.size(); q++) {
     for (int x = 0; x < opp_list.size(); x++) {
-      if (lazer[q]->IntersectsWith(opp_list[x]) &&
-          opp_list[x]->IntersectsWith(lazer[q].get())) {
-        player_score++;
+      if (lazer[q]->IntersectsWith(opp_list[x].get())) {
+        if (play.GetIsActive())
+          player_score++;
         opp_list[x]->SetIsActive(false);
         lazer[q]->SetIsActive(false);
       }
     }
   }
   for (int f = 0; f < GetOpponentProjectiles().size(); f++) {
-    if (opponent_projectiles[f]->IntersectsWith(play) &&
-        play->IntersectsWith(opponent_projectiles[f])) {
+    if (opponent_projectiles[f]->IntersectsWith(&play)) {
       lost_game = true;
-      play->SetIsActive(false);
+      play.SetIsActive(false);
       opponent_projectiles[f]->SetIsActive(false);
     }
   }
 }
 void Game::OnAnimationStep() {
+  if (opp_list.size() == 0) {
+    CreateOpponents();
+  }
   MoveGameElements();
+  //if (opponent_projectiles.size() == 0 || lazer.size() == 0)
+    LaunchProjectiles();
   FilterIntersections();
+  //if (opp_list.size() == 0)
+    RemoveInactive();
   UpdateScreen();
   gamescreen.Flush();
 }
@@ -92,36 +102,37 @@ void Game::OnMouseEvent(const graphics::MouseEvent &event) {
     play.SetX(event.GetX() - 25);
     play.SetY(event.GetY() - 25);
   }
+  if (event.GetMouseAction() == graphics::MouseAction::kPressed ||
+      event.GetMouseAction() == graphics::MouseAction::kDragged) {
+    std::unique_ptr<PlayerProjectile> lazer2;
+    lazer.push_back(std::move(lazer2));
+  }
 }
 
 void Game::LaunchProjectiles() {
   for (int i = 0; i < opp_list.size(); i++) {
     std::unique_ptr<OpponentProjectile> small_rock =
         opp_list[i]->LaunchProjectile();
-    std::unique_ptr<OpponentProjectile> new_rock = std::move(small_rock);
-    if (LaunchProjectile() != nullptr) {
-      std::push_back(std::move(new_rock))
-    } else {
-      return nullptr;
+    if (small_rock != nullptr) {
+      opponent_projectiles.push_back(std::move(small_rock));
     }
   }
 }
 
 void Game::RemoveInactive() {
-  GameElement game_element;
-  for (int i = opp_list.size(); i <= 0; i--) {
-    if (!(opp_list[i]->GetIsActive())) {
-      opp_list.erase(opp_list.begin())
+  for (int i = opponent_projectiles.size() - 1; i >= 0; i--) {
+    if (opponent_projectiles[i]->GetIsActive() == false) {
+      opponent_projectiles.erase(opponent_projectiles.begin() + i);
     }
   }
-  for (int i = opponent_projectiles.size(); i <= 0; i--) {
-    if (!(opponent_projectiles[i]->GetIsActive())) {
-      opponent_projectiles.erase(opponent_projectiles.begin())
+  for (int x = opp_list.size() - 1; x >= 0; x--) {
+    if (opp_list[x]->GetIsActive() == false) {
+      opp_list.erase(opp_list.begin() + x);
     }
   }
-  for (int i = lazer.size(); i <= 0; i--) {
-    if (!(lazer[i]->GetIsActive())) {
-      lazer.erase(lazer.begin())
+  for (int f = lazer.size() - 1; f >= 0; f--) {
+    if (lazer[f]->GetIsActive() == false) {
+      lazer.erase(lazer.begin() + f);
     }
   }
 }

@@ -14,8 +14,8 @@ public:
   Game(int width, int height) : gamescreen(width, height) {}
 
   void CreateOpponents() {
-    std::unique_ptr<Opponent> opp(200, 200);
-    opp_list.push_back(opp);
+    std::unique_ptr<Opponent> opp;//(200, 200);
+    opp_list.push_back(std::move(opp));
   }
 
   void Init();
@@ -26,12 +26,12 @@ public:
 
   graphics::Image &GetGameScreen() { return gamescreen; }
 
-  std::vector<unique_ptr<Opponent>> &GetOpponents() { return opp_list; }
+  std::vector<std::unique_ptr<Opponent>> &GetOpponents() { return opp_list; }
 
-  std::vector<unique_ptr<OpponentProjectile>> &GetOpponentProjectiles() {
+  std::vector<std::unique_ptr<OpponentProjectile>> &GetOpponentProjectiles() {
     return opponent_projectiles;
   }
-  std::vector<unique_ptr<PlayerProjectile>> &GetPlayerProjectiles() {
+  std::vector<std::unique_ptr<PlayerProjectile>> &GetPlayerProjectiles() {
     return lazer;
   }
 
@@ -45,7 +45,7 @@ public:
 
   void OnMouseEvent(const graphics::MouseEvent &event) override;
 
-  int GetScore() { return player_score }
+  int GetScore() { return player_score; }
 
   bool HasLost() { return lost_game; }
 
@@ -59,9 +59,9 @@ private:
   int width_;
   int height_;
   graphics::Image gamescreen;
-  std::vector<unique_ptr<Opponent>> opp_list;
-  std::vector<unique_ptr<OpponentProjectile>> opponent_projectiles;
-  std::vector<unique_ptr<PlayerProjectile>> lazer;
+  std::vector<std::unique_ptr<Opponent>> opp_list;
+  std::vector<std::unique_ptr<OpponentProjectile>> opponent_projectiles;
+  std::vector<std::unique_ptr<PlayerProjectile>> lazer;
   Player play;
 };
 

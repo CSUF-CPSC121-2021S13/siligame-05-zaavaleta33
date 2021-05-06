@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 
 #include "game.h"
 #include "game_element.h"
