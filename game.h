@@ -14,7 +14,7 @@ public:
   Game(int width, int height) : gamescreen(width, height) {}
 
   void CreateOpponents() {
-    std::unique_ptr<Opponent> opp;//(200, 200);
+    std::unique_ptr<Opponent> opp = std::make_unique<Opponent>(300,300);//(200, 200);
     opp_list.push_back(std::move(opp));
   }
 

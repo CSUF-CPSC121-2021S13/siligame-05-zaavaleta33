@@ -86,11 +86,9 @@ void Game::OnAnimationStep() {
     CreateOpponents();
   }
   MoveGameElements();
-  //if (opponent_projectiles.size() == 0 || lazer.size() == 0)
-    LaunchProjectiles();
+  LaunchProjectiles();
   FilterIntersections();
-  //if (opp_list.size() == 0)
-    RemoveInactive();
+  RemoveInactive();
   UpdateScreen();
   gamescreen.Flush();
 }
@@ -104,7 +102,8 @@ void Game::OnMouseEvent(const graphics::MouseEvent &event) {
   }
   if (event.GetMouseAction() == graphics::MouseAction::kPressed ||
       event.GetMouseAction() == graphics::MouseAction::kDragged) {
-    std::unique_ptr<PlayerProjectile> lazer2;
+    std::unique_ptr<PlayerProjectile> lazer2 =
+        std::make_unique<PlayerProjectile>(play.GetX(), play.GetY());
     lazer.push_back(std::move(lazer2));
   }
 }
@@ -112,7 +111,10 @@ void Game::OnMouseEvent(const graphics::MouseEvent &event) {
 void Game::LaunchProjectiles() {
   for (int i = 0; i < opp_list.size(); i++) {
     std::unique_ptr<OpponentProjectile> small_rock =
-        opp_list[i]->LaunchProjectile();
+        std::make_unique<OpponentProjectile>(opp_list[i]->GetX(),
+                                             opp_list[i]->GetY());
+    small_rock = opp_list[i]->LaunchProjectile();
+
     if (small_rock != nullptr) {
       opponent_projectiles.push_back(std::move(small_rock));
     }

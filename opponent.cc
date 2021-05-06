@@ -16,7 +16,8 @@ void Opponent::Move(const graphics::Image &gamescreen) {
 std::unique_ptr<OpponentProjectile> Opponent::LaunchProjectile() {
   if (counter == 10) {
     std::unique_ptr<OpponentProjectile> new_ptr_proj_opp =
-        std::make_unique<OpponentProjectile>((x_ + width_) * 0.5, y_ + height_);
+        std::make_unique<OpponentProjectile>(Opponent::GetX(),
+                                             Opponent::GetY());
     counter = 0;
     return new_ptr_proj_opp;
   } else {
