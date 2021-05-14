@@ -1,10 +1,11 @@
 #ifndef OPPONENT_H
 #define OPPONENT_H
-#include "game_element.h"
 #include <memory>
 
+#include "game_element.h"
+
 class OpponentProjectile : public GameElement {
-public:
+ public:
   OpponentProjectile() : GameElement() {}
   OpponentProjectile(int x, int y) : GameElement(x, y, 5, 5) {}
 
@@ -12,13 +13,13 @@ public:
 
   void Move(const graphics::Image &gamescreen) override;
 
-private:
+ private:
   int kWidth_ = 5;
   int kHeight_ = 5;
 };
 
 class Opponent : public GameElement {
-public:
+ public:
   Opponent() : GameElement() {}
 
   Opponent(int x, int y) : GameElement(x, y, 50, 50) {}
@@ -29,7 +30,7 @@ public:
 
   std::unique_ptr<OpponentProjectile> LaunchProjectile();
 
-private:
+ private:
   int counter = 0;
   int kWidth_ = 50;
   int kHeight_ = 50;

@@ -1,20 +1,22 @@
 #ifndef GAME_H
 #define GAME_H
+#include <memory>
+#include <vector>
+
 #include "cpputils/graphics/image.h"
 #include "cpputils/graphics/image_event.h"
 #include "opponent.h"
 #include "player.h"
-#include <memory>
-#include <vector>
 class Game : public graphics::AnimationEventListener,
              public graphics::MouseEventListener {
-public:
+ public:
   Game() : gamescreen(800, 600) {}
 
   Game(int width, int height) : gamescreen(width, height) {}
 
   void CreateOpponents() {
-    std::unique_ptr<Opponent> opp = std::make_unique<Opponent>(300,300);//(200, 200);
+    std::unique_ptr<Opponent> opp =
+        std::make_unique<Opponent>(300, 300);  //(200, 200);
     opp_list.push_back(std::move(opp));
   }
 
@@ -35,7 +37,7 @@ public:
     return lazer;
   }
 
-  Player &GetPlayer() { return play; } // gets the object
+  Player &GetPlayer() { return play; }  // gets the object
 
   void MoveGameElements();
 
@@ -53,7 +55,7 @@ public:
 
   void RemoveInactive();
 
-private:
+ private:
   int player_score = 0;
   bool lost_game = false;
   int width_;

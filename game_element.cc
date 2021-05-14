@@ -1,7 +1,6 @@
 #include "game_element.h"
 
 bool GameElement::IntersectsWith(GameElement *game) {
-
   return !(x_ > game->GetX() + game->GetWidth() ||
            game->GetX() > GetX() + GetWidth() ||
            y_ > game->GetY() + game->GetHeight() ||

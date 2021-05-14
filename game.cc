@@ -66,8 +66,7 @@ void Game::FilterIntersections() {
   for (int q = 0; q < lazer.size(); q++) {
     for (int x = 0; x < opp_list.size(); x++) {
       if (lazer[q]->IntersectsWith(opp_list[x].get())) {
-        if (play.GetIsActive())
-          player_score++;
+        if (play.GetIsActive()) player_score++;
         opp_list[x]->SetIsActive(false);
         lazer[q]->SetIsActive(false);
       }

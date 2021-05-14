@@ -1,8 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
+#include <memory>
+
 #include "game_element.h"
 #include "opponent.h"
-#include <memory>
 class Player : public GameElement {
  public:
   Player() : GameElement() {}
@@ -12,7 +13,6 @@ class Player : public GameElement {
   void Draw(graphics::Image &gamescreen) override;
 
   void Move(const graphics::Image &gamescreen) override;
-
 };
 
 class PlayerProjectile : public GameElement {

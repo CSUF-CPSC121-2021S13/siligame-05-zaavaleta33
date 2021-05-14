@@ -1,7 +1,8 @@
 #ifndef GAME_ELEMENT_H
 #define GAME_ELEMENT_H
-#include "cpputils/graphics/image.h"
 #include <memory>
+
+#include "cpputils/graphics/image.h"
 
 class GameElement {
  public:
